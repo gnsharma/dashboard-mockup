@@ -8,6 +8,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import theme from "src/theme";
+import App from "src/app.component";
 
 import "src/index.css";
 
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <App />
     </ThemeProvider>
   </React.StrictMode>
 );
