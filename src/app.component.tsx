@@ -58,12 +58,13 @@ function InfoCard({ icon, value, text, variant }: any) {
           ...(variant === "error" ? { backgroundColor: "pink" } : {}),
         }}
       >
-        <CardContent
-          sx={{ display: "flex", justifyContent: "start", gap: "30px" }}
-        >
+        <CardContent sx={{ display: "flex", justifyContent: "start", pb: 0 }}>
           {icon}
           <Box
             sx={{
+              ml: "-30px",
+              flexGrow: 1,
+              pt: "16px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -99,6 +100,7 @@ function App() {
           }}
         >
           <Toolbar
+            disableGutters
             sx={{
               display: "flex",
               flexDirection: "row",
@@ -112,7 +114,7 @@ function App() {
                 color: "white",
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-between",
+                gap: "30px",
                 flexGrow: 1,
               }}
             >
