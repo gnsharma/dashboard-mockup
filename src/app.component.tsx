@@ -7,6 +7,9 @@ import {
   CardContent,
   Typography,
   Avatar,
+  styled,
+  LinearProgress,
+  Slider,
 } from "@mui/material";
 import {
   GridView as GridViewIcon,
@@ -15,8 +18,52 @@ import {
   PeopleAltOutlined as PeopleAltOutlinedIcon,
   WarningAmberRounded as WarningAmberRoundedIcon,
 } from "@mui/icons-material/";
+import {
+  linearProgressClasses,
+  LinearProgressProps,
+} from "@mui/material/LinearProgress";
+import { alpha } from "@mui/material/styles";
+import { SliderProps } from "@mui/material/Slider";
 
-function BudgetCard({ header, subHeader, profitability }: any) {
+interface StyledLinearProgressProps extends LinearProgressProps {
+  barColor?: string;
+}
+
+const BorderLinearProgress = styled(LinearProgress, {
+  shouldForwardProp: (prop) => prop !== "barColor",
+})<StyledLinearProgressProps>(({ barColor }) => ({
+  height: 16,
+  borderRadius: 8,
+  // [`&.${linearProgressClasses.barColorPrimary}`]: {
+  //   backgroundColor: alpha(barColor ?? "#00ff00", 1),
+  // },
+  [`& .${linearProgressClasses.bar}`]: {
+    backgroundColor: barColor ?? "#00ff00",
+  },
+}));
+
+interface StyledSliderProps extends SliderProps {
+  success?: boolean;
+}
+
+const StyledSlider = styled(Slider, {
+  shouldForwardProp: (prop) => prop !== "success",
+})<StyledSliderProps>(({ success }) => ({
+  width: 300,
+  ...(success && {
+    color: "green",
+  }),
+}));
+
+function BudgetCard({
+  header,
+  subHeader,
+  profitability,
+  percent,
+  hours,
+  icon,
+  color,
+}: any) {
   return (
     <Paper elevation={4}>
       <Card sx={{ height: "100%" }}>
@@ -41,6 +88,28 @@ function BudgetCard({ header, subHeader, profitability }: any) {
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography variant="body2">70,000€</Typography>
               <Typography variant="body2">{profitability}</Typography>
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
+              mt: icon ? "-30px" : 0,
+            }}
+          >
+            {icon ? <Box sx={{ alignSelf: "flex-end" }}>{icon}</Box> : null}
+            <BorderLinearProgress
+              variant="determinate"
+              value={percent}
+              barColor={color}
+              color="primary"
+            />
+
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="body2">Actual hours: 1100</Typography>
+              <Typography variant="body2">{hours}</Typography>
             </Box>
           </Box>
         </CardContent>
@@ -144,7 +213,7 @@ function App() {
         >
           <Box
             sx={{
-              flexGrow: 3,
+              flexGrow: 1,
               display: "grid",
               gridTemplateColumns: "3fr 2fr 1fr",
               gap: "20px",
@@ -215,7 +284,7 @@ function App() {
           <Box sx={{ height: "30px" }}>Budget Status</Box>
           <Box
             sx={{
-              flexGrow: 1,
+              flexBasis: "200px",
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
               gap: "20px",
@@ -225,21 +294,33 @@ function App() {
               header="Insurance App"
               subHeader="Verti"
               profitability="-2,500€"
+              percent={100}
+              color="#ff0000"
+              hours={"100 hours over Budget!"}
+              icon={<WarningAmberRoundedIcon color="error" />}
             />
             <BudgetCard
               header="Neo"
               subHeader="Bankia"
               profitability="4,000€"
+              percent={60}
+              color="#ffff00"
+              hours="1000 sold hours"
             />
             <BudgetCard
               header="VR Website"
               subHeader="Barça"
               profitability="4,000€"
+              percent={60}
+              hours="2000 sold hours"
             />
             <BudgetCard
               header="VR Website"
               subHeader="Barça"
               profitability="4,000€"
+              percent={100}
+              hours="1100 sold hours"
+              icon={<TaskAltIcon color="success" />}
             />
           </Box>
         </Box>
