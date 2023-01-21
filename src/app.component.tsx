@@ -66,7 +66,7 @@ function BudgetCard({
 }: any) {
   return (
     <Paper elevation={4}>
-      <Card sx={{ height: "100%" }}>
+      <Card sx={{ height: "200px" }}>
         <CardContent
           sx={{ display: "flex", flexDirection: "column", gap: "12px" }}
         >
@@ -99,7 +99,7 @@ function BudgetCard({
               mt: icon ? "-30px" : 0,
             }}
           >
-            {icon ? <Box sx={{ alignSelf: "flex-end" }}>{icon}</Box> : null}
+            {icon ? <Box sx={{ alignSelf: "flex-end" }}>{icon}</Box> : <Box />}
             <BorderLinearProgress
               variant="determinate"
               value={percent}
@@ -140,7 +140,7 @@ function InfoCard({ icon, value, text, variant }: any) {
               ...(variant === "error" ? { color: "white" } : {}),
             }}
           >
-            <Typography variant="h2" sx={{ fontWeight: "bold" }}>
+            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
               {value}
             </Typography>
             <Typography variant="subtitle1">{text}</Typography>
@@ -177,7 +177,17 @@ function App() {
               gap: "200px",
             }}
           >
-            <Box>HOURS</Box>
+            <Box sx={{ display: "flex", gap: "8px", fontWeight: "bold" }}>
+              <Typography
+                variant="h6"
+                sx={{ color: "green", fontWeight: "900" }}
+              >
+                H
+              </Typography>
+              <Typography variant="h6" sx={{ letterSpacing: "8px" }}>
+                OURS
+              </Typography>
+            </Box>
             <Box
               sx={{
                 color: "white",
@@ -187,7 +197,15 @@ function App() {
                 flexGrow: 1,
               }}
             >
-              <Typography variant="subtitle1">Dashboard</Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  textDecoration: "solid underline green 2px",
+                  textUnderlineOffset: "4px",
+                }}
+              >
+                Dashboard
+              </Typography>
               <Typography variant="subtitle1">Projects</Typography>
               <Typography variant="subtitle1">Team</Typography>
               <Typography variant="subtitle1">Clients</Typography>
@@ -249,7 +267,7 @@ function App() {
                   text="Ongoing"
                 />
               </Box>
-              <Paper elevation={4} sx={{ flexGrow: 1 }}></Paper>
+              <Paper elevation={4} sx={{ flexGrow: 2 }}></Paper>
             </Box>
             <Box
               sx={{
@@ -277,14 +295,13 @@ function App() {
                   text="Employees"
                 />
               </Box>
-              <Paper elevation={4} sx={{ flexGrow: 1 }}></Paper>
+              <Paper elevation={4} sx={{ flexGrow: 2 }}></Paper>
             </Box>
-            <Paper elevation={1}></Paper>
+            <Paper elevation={4}></Paper>
           </Box>
           <Box sx={{ height: "30px" }}>Budget Status</Box>
           <Box
             sx={{
-              flexBasis: "200px",
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
               gap: "20px",
@@ -293,10 +310,18 @@ function App() {
             <BudgetCard
               header="Insurance App"
               subHeader="Verti"
-              profitability="-2,500€"
+              profitability={
+                <Typography sx={{ color: "#ff0000" }} variant="body2">
+                  -2,500€
+                </Typography>
+              }
               percent={100}
               color="#ff0000"
-              hours={"100 hours over Budget!"}
+              hours={
+                <Typography variant="body2" sx={{ color: "#ff0000" }}>
+                  100 hours over Budget!
+                </Typography>
+              }
               icon={<WarningAmberRoundedIcon color="error" />}
             />
             <BudgetCard
