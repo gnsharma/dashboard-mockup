@@ -10,8 +10,8 @@ const __dirname = dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  esbuild: {
-    treeShaking: true,
+  server: {
+    open: true,
   },
   plugins: [
     react(),

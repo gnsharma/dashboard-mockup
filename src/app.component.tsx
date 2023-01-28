@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Box,
   AppBar,
@@ -9,7 +10,9 @@ import {
   Avatar,
   styled,
   LinearProgress,
-  Slider,
+  IconButton,
+  Badge,
+  Divider,
 } from "@mui/material";
 import {
   GridView as GridViewIcon,
@@ -17,13 +20,68 @@ import {
   Autorenew as AutorenewIcon,
   PeopleAltOutlined as PeopleAltOutlinedIcon,
   WarningAmberRounded as WarningAmberRoundedIcon,
+  Notifications as NotificationsIcon,
+  ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material/";
 import {
   linearProgressClasses,
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
 import { alpha } from "@mui/material/styles";
-import { SliderProps } from "@mui/material/Slider";
+import SliderUnstyled, {
+  SliderUnstyledThumbSlotProps,
+  SliderUnstyledProps,
+} from "@mui/base/SliderUnstyled";
+
+import "./app.css";
+
+const getEmojifromValue = (value: number | undefined) => {
+  if (!value) return "😡";
+  if (value < 20) return "😡";
+  if (value < 40) return "😟";
+  if (value < 60) return "😐";
+  if (value < 80) return "🙂";
+  if (value >= 80) return "😄";
+};
+
+const EmojiThumb = React.forwardRef(function Thumb(
+  props: SliderUnstyledThumbSlotProps,
+  ref: React.ForwardedRef<HTMLSpanElement>
+) {
+  const {
+    ownerState: { defaultValue },
+    className = "",
+    children,
+    ...other
+  } = props;
+  const thumbValue = Array.isArray(defaultValue)
+    ? defaultValue[0]
+    : defaultValue;
+  return (
+    <span className={`${className} slider-thumb-wrapper`} {...other} ref={ref}>
+      <span>{getEmojifromValue(thumbValue)}</span>
+      {children}
+    </span>
+  );
+});
+
+const Slider = React.forwardRef(function Slider(
+  props: SliderUnstyledProps,
+  ref: React.ForwardedRef<HTMLSpanElement>
+) {
+  return (
+    <SliderUnstyled
+      {...props}
+      ref={ref}
+      slots={{ thumb: EmojiThumb }}
+      slotProps={{
+        root: { className: "slider-root" },
+        rail: { className: "slider-rail" },
+        track: { className: "slider-track" },
+      }}
+    />
+  );
+});
 
 interface StyledLinearProgressProps extends LinearProgressProps {
   barColor?: string;
@@ -40,19 +98,6 @@ const BorderLinearProgress = styled(LinearProgress, {
   [`& .${linearProgressClasses.bar}`]: {
     backgroundColor: barColor ?? "#00ff00",
   },
-}));
-
-interface StyledSliderProps extends SliderProps {
-  success?: boolean;
-}
-
-const StyledSlider = styled(Slider, {
-  shouldForwardProp: (prop) => prop !== "success",
-})<StyledSliderProps>(({ success }) => ({
-  width: 300,
-  ...(success && {
-    color: "green",
-  }),
 }));
 
 function BudgetCard({
@@ -151,12 +196,32 @@ function InfoCard({ icon, value, text, variant }: any) {
   );
 }
 
-function App() {
+function Mood({ value, icon = "H", name, title }: any) {
+  return (
+    <Box
+      sx={{ display: "flex", flexDirection: "column", py: "6px", gap: "12px" }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <Avatar>{icon}</Avatar>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography variant="subtitle2">{name}</Typography>
+          <Typography variant="body2" sx={{ opacity: "0.8" }}>
+            {title}
+          </Typography>
+        </Box>
+      </Box>
+      <Slider defaultValue={value} />
+      <Divider light />
+    </Box>
+  );
+}
+
+export default function App() {
   return (
     <>
       <Box
         sx={{
-          height: "calc(100% - 30px)",
+          // height: "calc(100% - 30px)",
           mx: "20px",
           backgroundColor: "#f9f9f9",
         }}
@@ -212,8 +277,21 @@ function App() {
               <Typography variant="subtitle1">Time</Typography>
               <Typography variant="subtitle1">Reports</Typography>
             </Box>
-            <Box>
-              <Avatar>H</Avatar>
+            <Box sx={{ display: "flex", gap: "20px" }}>
+              <IconButton
+                size="large"
+                aria-label="show 17 new notifications"
+                color="inherit"
+              >
+                <Badge variant="dot" color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <Box sx={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                <Avatar>H</Avatar>
+                <Typography variant="subtitle1">Mario</Typography>
+                <ExpandMoreIcon />
+              </Box>
             </Box>
           </Toolbar>
         </AppBar>
@@ -252,17 +330,23 @@ function App() {
                 }}
               >
                 <InfoCard
-                  icon={<GridViewIcon color="success" />}
+                  icon={
+                    <GridViewIcon color="success" sx={{ fontSize: "36px" }} />
+                  }
                   value="5"
                   text="Total Projects"
                 />
                 <InfoCard
-                  icon={<TaskAltIcon color="success" />}
+                  icon={
+                    <TaskAltIcon color="success" sx={{ fontSize: "36px" }} />
+                  }
                   value="1"
                   text="Completed"
                 />
                 <InfoCard
-                  icon={<AutorenewIcon color="success" />}
+                  icon={
+                    <AutorenewIcon color="success" sx={{ fontSize: "36px" }} />
+                  }
                   value="3"
                   text="Ongoing"
                 />
@@ -284,20 +368,37 @@ function App() {
                 }}
               >
                 <InfoCard
-                  icon={<WarningAmberRoundedIcon color="error" />}
+                  icon={
+                    <WarningAmberRoundedIcon
+                      color="error"
+                      sx={{ fontSize: "36px" }}
+                    />
+                  }
                   value="1"
                   text="Delayed"
                   variant="error"
                 />
                 <InfoCard
-                  icon={<PeopleAltOutlinedIcon color="success" />}
+                  icon={
+                    <PeopleAltOutlinedIcon
+                      color="success"
+                      sx={{ fontSize: "36px" }}
+                    />
+                  }
                   value="5"
                   text="Employees"
                 />
               </Box>
               <Paper elevation={4} sx={{ flexGrow: 2 }}></Paper>
             </Box>
-            <Paper elevation={4}></Paper>
+            <Paper elevation={4} sx={{ px: "12px", pt: "20px", pb: "10px" }}>
+              <Typography variant="h6">Team mood</Typography>
+              <Mood value={20} name="Andrea" title="UX Junior" />
+              <Mood value={80} name="Alvaro" title="Back end developer" />
+              <Mood value={60} name="Juan" title="UX Senior" />
+              <Mood value={0} name="Jose" title="Marketing" />
+              <Mood value={50} name="Maria" title="UX Junior" />
+            </Paper>
           </Box>
           <Box sx={{ height: "30px" }}>Budget Status</Box>
           <Box
@@ -322,7 +423,12 @@ function App() {
                   100 hours over Budget!
                 </Typography>
               }
-              icon={<WarningAmberRoundedIcon color="error" />}
+              icon={
+                <WarningAmberRoundedIcon
+                  color="error"
+                  sx={{ fontSize: "20px" }}
+                />
+              }
             />
             <BudgetCard
               header="Neo"
@@ -345,7 +451,7 @@ function App() {
               profitability="4,000€"
               percent={100}
               hours="1100 sold hours"
-              icon={<TaskAltIcon color="success" />}
+              icon={<TaskAltIcon color="success" sx={{ fontSize: "20px" }} />}
             />
           </Box>
         </Box>
@@ -357,4 +463,4 @@ function App() {
   );
 }
 
-export default App;
+// export default App;
